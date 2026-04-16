@@ -1,0 +1,23 @@
+<!-- components/login-modal.html -->
+<div class="modal-content">
+    <div class="modal-header">
+        <h2>Вход в личный кабинет</h2>
+        <span class="close" onclick="window.closeModal('loginModal')">&times;</span>
+    </div>
+    <div class="modal-body">
+        <form onsubmit="event.preventDefault(); window.handleLogin()">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Войти</button>
+        </form>
+        <div class="modal-footer">
+            <p>Нет аккаунта? <a href="#" onclick="window.switchToRegister()">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</div>
