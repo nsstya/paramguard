@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParamGuard - Контакты</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/modal.css">
+    <style>
+        .contacts-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Hero секция */
+        .contacts-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 40px;
+            color: white;
+            text-align: center;
+        }
+        
+        .contacts-hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        
+        .contacts-hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Контактная информация - по центру */
+        .contact-info-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            width: 280px;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(118,75,162,0.15);
+        }
+        
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            color: #764ba2;
+        }
+        
+        .contact-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .contact-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .contact-card a {
+            color: #764ba2;
+            text-decoration: none;
+        }
+        
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+        
+        .work-hours p {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin: 0;
+        }
+        
+        .work-hours p:last-child {
+            border-bottom: none;
+        }
+        
+        /* Форма обратной связи - по центру */
+        .contact-form-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .form-container h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .form-container .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group .required::after {
+            content: '*';
+            color: #f5222d;
+            margin-left: 4px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118,75,162,0.1);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(118,75,162,0.3);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Карта */
+        .map-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .map-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .map-container h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .map-placeholder {
+            background: linear-gradient(135deg, #f8f7ff, white);
+            border-radius: 16px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #764ba2;
+            color: #764ba2;
+        }
+        
+        .map-placeholder i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+        
+        .map-placeholder p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .address-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f7ff;
+            border-radius: 16px;
+        }
+        
+        .address-details p {
+            margin: 8px 0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .address-details i {
+            width: 24px;
+            color: #764ba2;
+        }
+        
+        /* Социальные сети */
+        .social-section {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .social-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .social-section .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+        }
+        
+        .social-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover .social-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .social-link span {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .telegram .social-icon { color: #26A5E4; }
+        .whatsapp .social-icon { color: #25D366; }
+        .vk .social-icon { color: #0077FF; }
+        .email .social-icon { color: #EA4335; }
+        
+        @media (max-width: 768px) {
+            .contacts-hero {
+                padding: 40px 20px;
+            }
+            
+            .contacts-hero h1 {
+                font-size: 32px;
+            }
+            
+            .contact-info-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-card {
+                width: 100%;
+                max-width: 320px;
+            }
+            
+            .form-container {
+                margin: 0 20px;
+                padding: 25px;
+            }
+            
+            .map-container {
+                margin: 0 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    
+    <main class="main-content">
+        <div class="contacts-container">
+            <!-- Hero секция -->
+            <section class="contacts-hero">
+                <h1>Свяжитесь с нами</h1>
+                <p>Мы всегда на связи и готовы ответить на ваши вопросы!</p>
+            </section>
+            
+            <!-- Контактная информация - 3 карточки по центру -->
+            <div class="contact-info-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3>Телефон</h3>
+                    <a href="tel:+79208747276">8 (920) 874-72-76</a>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <a href="mailto:gaea22ki071@yandex.ru">gaea22ki071@yandex.ru</a>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Режим работы</h3>
+                    <div class="work-hours">
+                        <p><span>Пн-Пт:</span><span>09:00 - 20:00</span></p>
+                        <p><span>Суббота:</span><span>10:00 - 18:00</span></p>
+                        <p><span>Воскресенье:</span><span>Выходной</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Форма обратной связи - по центру -->
+            <div class="contact-form-wrapper">
+                <div class="form-container">
+                    <h2>Напишите нам</h2>
+                    <p class="subtitle">Заполните форму, и мы свяжемся с вами в ближайшее время</p>
+                    
+                    <form id="contactForm" onsubmit="sendContactMessage(event)">
+                        <div class="form-group">
+                            <label class="required">Ваше имя</label>
+                            <input type="text" id="contactName" class="form-control" placeholder="Иван Иванов" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Email</label>
+                            <input type="email" id="contactEmail" class="form-control" placeholder="ivan@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Телефон</label>
+                            <input type="tel" id="contactPhone" class="form-control" placeholder="+7 999 123-45-67">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Тема обращения</label>
+                            <select id="contactSubject" class="form-control" required>
+                                <option value="">Выберите тему</option>
+                                <option value="policy">Оформление полиса</option>
+                                <option value="payment">Вопросы оплаты</option>
+                                <option value="payout">Выплаты</option>
+                                <option value="tech">Техническая поддержка</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Сообщение</label>
+                            <textarea id="contactMessage" class="form-control" placeholder="Опишите ваш вопрос подробнее..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i> Отправить сообщение
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            
+            
+            <!-- Социальные сети -->
+            <section class="social-section">
+                <h2>Мы в социальных сетях</h2>
+                <p class="subtitle">Подписывайтесь, чтобы быть в курсе новостей и акций</p>
+                <div class="social-links">
+                    <a href="#" class="social-link telegram" onclick="showNotification('Переход в Telegram', 'info'); return false;">
+                        <div class="social-icon"><i class="fab fa-telegram-plane"></i></div>
+                        <span>Telegram</span>
+                    </a>
+                    <a href="#" class="social-link whatsapp" onclick="showNotification('Переход в WhatsApp', 'info'); return false;">
+                        <div class="social-icon"><i class="fab fa-whatsapp"></i></div>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="#" class="social-link vk" onclick="showNotification('Переход в VK', 'info'); return false;">
+                        <div class="social-icon"><i class="fab fa-vk"></i></div>
+                        <span>ВКонтакте</span>
+                    </a>
+                    <a href="#" class="social-link email" onclick="showNotification('Скопирован email: support@paramguard.io', 'success'); return false;">
+                        <div class="social-icon"><i class="fas fa-envelope"></i></div>
+                        <span>Email</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <div id="footer"></div>
+    
+    <div id="notification"></div>
+    <div id="loginModal" class="modal" style="display: none;"></div>
+    <div id="registerModal" class="modal" style="display: none;"></div>
+    <div id="profileModal" class="modal modal-large" style="display: none;"></div>
+
+    <script src="../js/global.js"></script>
+    <script src="../js/common-auth.js"></script>
+    
+    <script>
+        async function sendContactMessage(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('contactPhone').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            if (!name || !email || !subject || !message) {
+                showNotification('Пожалуйста, заполните все обязательные поля', 'warning');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Введите корректный email адрес', 'warning');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/contact/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, subject, message })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Сообщение отправлено! Мы свяжемся с вами в ближайшее время.', 'success');
+                    document.getElementById('contactForm').reset();
+                } else {
+                    showNotification(data.error || 'Ошибка отправки', 'error');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showNotification('Ошибка соединения с сервером. Попробуйте позже.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница контактов загружена');
+        });
+        
+        window.sendContactMessage = sendContactMessage;
+    </script>
+
+
+    <!-- Контейнеры для модальных окон -->
+    <div id="notification"></div>
+    <div id="loginModal" class="modal" style="display: none;"></div>
+    <div id="registerModal" class="modal" style="display: none;"></div>
+    <div id="profileModal" class="modal modal-large" style="display: none;"></div>
+
+    <!-- Подключение скриптов -->
+    <script src="../js/global.js"></script>
+    <script src="../js/profile.js"></script>
+
+</body>
+</html>

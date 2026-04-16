@@ -1,0 +1,547 @@
+<!-- insurance-travel.html (обновленный) -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParamGuard - Страхование путешествий</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/modal.css">
+    <style>
+        /* Дополнительные стили */
+        .insured-section {
+            background: #f8f7ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .insured-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .info-note {
+            background: #fff7e6;
+            border-left: 4px solid #faad14;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .price-rub {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .price-rub .rub-amount {
+            font-size: 32px;
+            font-weight: 800;
+        }
+        
+        .price-breakdown {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+        
+        /* Стили для выплат */
+        .payouts-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .payout-item-real {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #52c41a;
+            transition: all 0.3s;
+        }
+        
+        .payout-item-real:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .payout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .payout-user {
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .payout-amount {
+            font-size: 18px;
+            font-weight: 800;
+            color: #52c41a;
+        }
+        
+        .payout-details {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .payout-date {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .loading-payouts {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .empty-payouts {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            background: #f8f7ff;
+            border-radius: 12px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        /* Стили для отключенных опций */
+        .risk-checkbox.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+        
+        .risk-checkbox.disabled input {
+            cursor: not-allowed;
+        }
+        
+        .badge-dev {
+            background: #faad14;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    
+    <main class="main-content">
+       <div class="page-header">
+            <h1 style="color: white;">Страхование путешествий</h1>
+            <nav class="breadcrumb">
+                <a href="../index.html">Главная</a> / 
+                <span>Путешествия</span>
+            </nav>
+        </div>
+        
+        <div class="travel-insurance-container">
+            <div class="form-section">
+                <h2>Оформление полиса</h2>
+                
+                <form id="travelInsuranceForm">
+                    <!-- Данные страхователя -->
+                    <div class="insured-section">
+                        <div class="insured-title">
+                            <i class="fas fa-user-circle"></i> Данные страхователя
+                        </div>
+                        <div class="form-group">
+                            <label>ФИО полностью *</label>
+                            <input type="text" id="insuredFullName" class="form-control" placeholder="Иванов Иван Иванович" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Дата рождения *</label>
+                                <input type="date" id="insuredBirthDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="insuredEmail" class="form-control" placeholder="email@example.com">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Телефон</label>
+                                <input type="tel" id="insuredPhone" class="form-control" placeholder="+7 999 123-45-67">
+                            </div>
+                            <div class="form-group">
+                                <label>Паспортные данные *</label>
+                                <input type="text" id="passportData" class="form-control" placeholder="1234 567890" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Данные рейса -->
+                    <div class="insured-section">
+                        <div class="insured-title">
+                            <i class="fas fa-plane"></i> Данные рейса
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Номер рейса *</label>
+                                <input type="text" id="flightNumber" class="form-control" placeholder="SU1234" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Авиакомпания *</label>
+                                <input type="text" id="airline" class="form-control" placeholder="Аэрофлот" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Аэропорт вылета *</label>
+                                <input type="text" id="departureAirport" class="form-control" placeholder="SVO" required>
+                                <small style="color: #999;">Код аэропорта (3 буквы)</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Аэропорт прилета *</label>
+                                <input type="text" id="arrivalAirport" class="form-control" placeholder="LED" required>
+                                <small style="color: #999;">Код аэропорта (3 буквы)</small>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Дата вылета *</label>
+                                <input type="date" id="departureDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Время вылета *</label>
+                                <input type="time" id="departureTime" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Страна назначения *</label>
+                            <input type="text" id="country" class="form-control" placeholder="Турция, Египет, Таиланд..." required>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Сумма покрытия -->
+                    <div class="insured-section">
+                        <div class="insured-title">
+                            <i class="fas fa-shield-alt"></i> Сумма страхового покрытия
+                        </div>
+                        <div class="form-group">
+                            <label>Выберите максимальную сумму выплаты</label>
+                            <select id="coverage" class="form-control" required>
+                                <option value="10000">10 000 ₽</option>
+                                <option value="20000">20 000 ₽</option>
+                                <option value="50000">50 000 ₽</option>
+                                <option value="100000">100 000 ₽</option>
+                                <option value="250000" selected>250 000 ₽</option>
+                                <option value="500000">500 000 ₽</option>
+                                <option value="750000">750 000 ₽</option>
+                                <option value="1000000">1 000 000 ₽</option>
+                            </select>
+                        </div>
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            <i class="fas fa-info-circle"></i> Максимальная сумма, которую вы получите при наступлении страхового случая
+                        </small>
+                    </div>
+                    
+                    <!-- Транспортные риски -->
+                    <div class="insured-section">
+                        <div class="insured-title">
+                            <i class="fas fa-exclamation-triangle"></i> Страховые риски
+                        </div>
+                        <div class="risk-grid">
+                            <label class="risk-checkbox">
+                                <input type="checkbox" name="risk" value="flight_delay" checked> Задержка рейса (от 2 часов)
+                            </label>
+                            <label class="risk-checkbox">
+                                <input type="checkbox" name="risk" value="flight_cancellation" checked> Отмена рейса
+                            </label>
+                            <label class="risk-checkbox">
+                                <input type="checkbox" name="risk" value="alternate_airport"> Посадка на запасной аэродром
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Погодные риски (В РАЗРАБОТКЕ) -->
+                    <div class="insured-section" style="opacity: 0.7; background: #f0f0f0;">
+                        <div class="insured-title">
+                            <i class="fas fa-cloud-rain"></i> Погодные риски 
+                            <span style="font-size: 12px; background: #faad14; color: white; padding: 2px 8px; border-radius: 20px;">В разработке</span>
+                        </div>
+                        <div class="risk-grid">
+                            <label class="risk-checkbox disabled" style="opacity: 0.6; cursor: not-allowed;">
+                                <input type="checkbox" name="weather" value="heavy_rain" disabled> Сильный дождь (более 20 мм/24ч)
+                            </label>
+                            <label class="risk-checkbox disabled" style="opacity: 0.6; cursor: not-allowed;">
+                                <input type="checkbox" name="weather" value="storm_warning" disabled> Штормовое предупреждение
+                            </label>
+                            <label class="risk-checkbox disabled" style="opacity: 0.6; cursor: not-allowed;">
+                                <input type="checkbox" name="weather" value="cold_weather" disabled> Аномальный холод (ниже +5°C)
+                            </label>
+                        </div>
+                        <div class="info-note" style="margin-top: 15px; padding: 10px; font-size: 13px;">
+                            <i class="fas fa-info-circle"></i> Погодные риски будут доступны в ближайшее время
+                        </div>
+                    </div>
+                    
+                    <!-- Расчет стоимости в рублях -->
+                    <div class="price-rub">
+                        <div>Стоимость страховки</div>
+                        <div class="rub-amount" id="totalPriceRub">0 ₽</div>
+                        <div class="price-breakdown" id="priceBreakdown"></div>
+                    </div>
+                    
+                    <div class="blockchain-info">
+                        <h4><i class="fas fa-link"></i> Информация о смарт-контракте</h4>
+                        <p>После оплаты будет создан смарт-контракт в тестовой сети TON.</p>
+                        <p>Оплата производится в рублях через ЮKassa.</p>
+                        <p>Сеть: <strong>Testnet</strong></p>
+                    </div>
+                    
+                    <div class="info-note">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Важная информация:</strong>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Страховой полис вступает в силу с момента оплаты</li>
+                            <li>Выплата производится автоматически при наступлении страхового случая</li>
+                            <li>Договор заключается в электронном виде и имеет юридическую силу</li>
+                            <li>После оплаты вы получите номер полиса</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                        <button type="button" class="btn btn-secondary" onclick="saveDraft()" style="flex: 1;">
+                            <i class="fas fa-save"></i> Сохранить черновик
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="processTravelPayment()" style="flex: 1;">
+                            <i class="fas fa-file-signature"></i> Оформить полис и оплатить
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="info-section">
+                <!-- Вкладка последних выплат из БД -->
+                <div class="recent-payouts">
+                    <h3>
+                        <i class="fas fa-history"></i> Последние выплаты
+                        <span style="font-size: 12px; font-weight: normal; color: #666; margin-left: 10px;"></span>
+                    </h3>
+                    <div id="payoutsList" class="payouts-list">
+                        <div class="loading-payouts">
+                            <i class="fas fa-spinner fa-spin"></i> Загрузка последних выплат...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div id="footer"></div>
+    
+    <!-- Контейнеры для модальных окон и уведомлений -->
+    <div id="notification"></div>
+    <div id="loginModal" class="modal" style="display: none;"></div>
+    <div id="registerModal" class="modal" style="display: none;"></div>
+    <div id="profileModal" class="modal modal-large" style="display: none;"></div>
+
+    <!-- Подключение скриптов -->
+    <script src="../js/global.js"></script>
+    <script src="../js/common-auth.js"></script>
+    <script src="../js/profile.js"></script>
+    <script src="../js/insurance-travel.js"></script>
+    
+    <script>
+        // Функция загрузки последних выплат из БД
+        async function loadRecentPayouts() {
+            const payoutsContainer = document.getElementById('payoutsList');
+            if (!payoutsContainer) return;
+            
+            payoutsContainer.innerHTML = '<div class="loading-payouts"><i class="fas fa-spinner fa-spin"></i> Загрузка последних выплат...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/payouts/recent?limit=5');
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки');
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.payouts && data.payouts.length > 0) {
+                    displayPayouts(data.payouts);
+                } else {
+                    showDemoPayouts();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки выплат:', error);
+                showDemoPayouts();
+            }
+        }
+        
+        function displayPayouts(payouts) {
+            const payoutsContainer = document.getElementById('payoutsList');
+            if (!payoutsContainer) return;
+            
+            payoutsContainer.innerHTML = payouts.map(payout => `
+                <div class="payout-item-real">
+                    <div class="payout-header">
+                        <span class="payout-user">
+                            <i class="fas fa-user-circle"></i> ${payout.user_name || 'Клиент'}
+                        </span>
+                        <span class="payout-amount">
+                            ${payout.amount_rub ? payout.amount_rub.toLocaleString() + ' ₽' : payout.amount_ton + ' TON'}
+                        </span>
+                    </div>
+                    <div class="payout-details">
+                        <i class="fas fa-exclamation-triangle" style="color: #faad14;"></i> 
+                        ${getRiskName(payout.risk_code)}
+                    </div>
+                    <div class="payout-date">
+                        <i class="fas fa-calendar-alt"></i> ${new Date(payout.created_at).toLocaleString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function showDemoPayouts() {
+            const payoutsContainer = document.getElementById('payoutsList');
+            if (!payoutsContainer) return;
+            
+            const demopayouts = [
+                { user_name: 'Анна К.', amount_rub: 5000, risk_code: 'flight_delay', created_at: new Date(Date.now() - 5 * 60000).toISOString() },
+                { user_name: 'Михаил П.', amount_rub: 10000, risk_code: 'flight_cancellation', created_at: new Date(Date.now() - 15 * 60000).toISOString() },
+                { user_name: 'Елена С.', amount_rub: 7500, risk_code: 'storm_warning', created_at: new Date(Date.now() - 35 * 60000).toISOString() },
+                { user_name: 'Дмитрий В.', amount_rub: 2500, risk_code: 'alternate_airport', created_at: new Date(Date.now() - 2 * 3600000).toISOString() }
+            ];
+            
+            payoutsContainer.innerHTML = demopayouts.map(payout => `
+                <div class="payout-item-real">
+                    <div class="payout-header">
+                        <span class="payout-user"><i class="fas fa-user-circle"></i> ${payout.user_name}</span>
+                        <span class="payout-amount">${payout.amount_rub.toLocaleString()} ₽</span>
+                    </div>
+                    <div class="payout-details"><i class="fas fa-exclamation-triangle" style="color: #faad14;"></i> ${getRiskName(payout.risk_code)}</div>
+                    <div class="payout-date"><i class="fas fa-calendar-alt"></i> ${new Date(payout.created_at).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+        
+        function getRiskName(riskCode) {
+            const risks = {
+                'flight_delay': 'Задержка рейса',
+                'flight_cancellation': 'Отмена рейса',
+                'alternate_airport': 'Посадка на запасной аэродром',
+                'heavy_rain': 'Сильный дождь',
+                'storm_warning': 'Штормовое предупреждение',
+                'cold_weather': 'Аномальный холод'
+            };
+            return risks[riskCode] || riskCode || 'Страховая выплата';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница страхования путешествий загружена');
+            loadRecentPayouts();
+            
+            const today = new Date().toISOString().split('T')[0];
+            const departureDate = document.getElementById('departureDate');
+            const birthDate = document.getElementById('insuredBirthDate');
+            
+            if (departureDate) departureDate.min = today;
+            if (birthDate) birthDate.max = today;
+        });
+    </script>
+    
+    <script>
+        // Принудительно настраиваем клик на иконку для страницы страхования
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Настройка иконки для страницы страхования');
+            
+            // Обновляем иконку
+            if (typeof updateUserIcon === 'function') {
+                updateUserIcon();
+            }
+            
+            // Настраиваем клик на иконку
+            setTimeout(() => {
+                const userIcon = document.querySelector('.user-icon');
+                if (userIcon) {
+                    // Убираем старые обработчики
+                    const newIcon = userIcon.cloneNode(true);
+                    userIcon.parentNode.replaceChild(newIcon, userIcon);
+                    
+                    newIcon.onclick = function(e) {
+                        e.stopPropagation();
+                        console.log('🖱️ Клик по иконке (страхование)');
+                        const savedUser = localStorage.getItem('user');
+                        if (savedUser) {
+                            // Открываем профиль
+                            const modal = document.getElementById('profileModal');
+                            if (modal) {
+                                modal.style.display = 'flex';
+                                modal.style.zIndex = '9999';
+                                if (typeof loadProfileData === 'function') {
+                                    loadProfileData();
+                                }
+                            } else {
+                                console.error('Модальное окно не найдено');
+                            }
+                        } else {
+                            if (typeof openLoginModal === 'function') {
+                                openLoginModal();
+                            }
+                        }
+                    };
+                    console.log('✅ Обработчик клика настроен');
+                } else {
+                    console.error('Иконка пользователя не найдена');
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

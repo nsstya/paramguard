@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParamGuard - Как это работает</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/modal.css">
+    <style>
+        /* Дополнительные стили для страницы "Как это работает" */
+        .how-it-works-page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero секция */
+        .how-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 80px 60px;
+            margin-bottom: 60px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .how-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .how-hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .how-hero-text {
+            font-size: 20px;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .how-hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .how-stat-item {
+            text-align: center;
+        }
+
+        .how-stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .how-stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Блок с основным описанием */
+        .description-block {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .description-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .description-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .description-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .highlight-text {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 5px solid #764ba2;
+            font-size: 20px;
+            color: #333;
+            font-weight: 500;
+            margin: 40px 0;
+        }
+
+        /* Схема работы */
+        .workflow-section {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-subtitle {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .workflow-step {
+            text-align: center;
+            position: relative;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f8f7ff, white);
+            border-radius: 20px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .workflow-step:hover {
+            transform: translateY(-10px);
+            border-color: #764ba2;
+            box-shadow: 0 20px 30px rgba(118, 75, 162, 0.15);
+        }
+
+        .workflow-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #764ba2;
+            font-weight: 800;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 32px;
+            position: relative;
+        }
+
+        .step-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.4;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.4; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 2px solid #764ba2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #764ba2;
+            font-size: 16px;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .step-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* Блок с оракулом */
+        .oracle-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            color: white;
+        }
+
+        .oracle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .oracle-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .oracle-text {
+            font-size: 18px;
+            line-height: 1.8;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .oracle-features {
+            list-style: none;
+        }
+
+        .oracle-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .oracle-features i {
+            color: #ffd700;
+        }
+
+        .oracle-image {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .oracle-image i {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .oracle-image h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        /* Преимущества */
+        .benefits-section {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #f8f7ff, white);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .benefit-card:hover {
+            transform: scale(1.05);
+        }
+
+        .benefit-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 40px;
+        }
+
+        .benefit-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .benefit-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Демо-анимация */
+        .demo-section {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .demo-animation {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            min-height: 300px;
+        }
+
+        .blockchain-demo {
+            position: relative;
+            height: 200px;
+        }
+
+        .block {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .block1 {
+            top: 20px;
+            left: 20px;
+            animation-delay: 0s;
+        }
+
+        .block2 {
+            top: 60px;
+            left: 120px;
+            animation-delay: 0.5s;
+        }
+
+        .block3 {
+            top: 20px;
+            left: 220px;
+            animation-delay: 1s;
+        }
+
+        .block4 {
+            top: 60px;
+            left: 320px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .chain-line {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            width: 340px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #764ba2, transparent);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .workflow-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .workflow-step:not(:last-child)::after {
+                display: none;
+            }
+            
+            .benefits-grid,
+            .oracle-grid,
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .how-hero {
+                padding: 40px 30px;
+            }
+            
+            .how-hero-title {
+                font-size: 36px;
+            }
+            
+            .description-block,
+            .workflow-section,
+            .benefits-section,
+            .demo-section {
+                padding: 30px 20px;
+            }
+            
+            .how-hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    
+    <main class="main-content how-it-works-page">
+        <!-- Hero секция -->
+        <section class="how-hero">
+            <div class="how-hero-content">
+                <h1 class="how-hero-title">Как работает параметрическое страхование на блокчейне</h1>
+                <p class="how-hero-text">
+                    Автоматизация страховых полисов с помощью самоисполняющегося кода снижает риск мошенничества, 
+                    ускоряет выплаты и снижает затраты.
+                </p>
+                <div class="how-hero-stats">
+                    <div class="how-stat-item">
+                        <div class="how-stat-number">100%</div>
+                        <div class="how-stat-label">Автоматизация</div>
+                    </div>
+                    <div class="how-stat-item">
+                        <div class="how-stat-number">15 мин</div>
+                        <div class="how-stat-label">Среднее время выплаты</div>
+                    </div>
+                    <div class="how-stat-item">
+                        <div class="how-stat-number">0</div>
+                        <div class="how-stat-label">Человеческий фактор</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Основное описание -->
+        <section class="description-block">
+            <h2 class="description-title">Что такое параметрическое страхование?</h2>
+            <p class="description-text">
+                Параметрическое страхование — тип страхового договора, который защищает страхователя от 
+                наступления определенного события путем выплаты фиксированной суммы.
+            </p>
+            <div class="highlight-text">
+                После выполнения предопределенных условий выплата инициируется автоматически и отправляется 
+                непосредственно на счет страхователя.
+            </div>
+            <p class="description-text">
+                Смарт-контракт содержит все условия страхования, логику проверки событий и механизм 
+                автоматических выплат. После развертывания является неизменяемым.  
+                Соответственно весь процесс становится прозрачным, защищенным от мошенничества и максимально быстрым.
+            </p>
+        </section>
+
+        <!-- Схема работы -->
+        <section class="workflow-section">
+            <h2 class="section-subtitle">Вот как это работает на практике</h2>
+            <div class="workflow-grid">
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <i class="fas fa-file-contract"></i>
+                        <span class="step-number">1</span>
+                    </div>
+                    <h3 class="step-title">Создание полиса</h3>
+                    <p class="step-description">
+                        Страховая компания создает смарт-контракт с четкими условиями 
+                        (например, «если рейс X задерживается более чем на 2 часа, выплата = 10 000 рублей»).
+                    </p>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <i class="fas fa-credit-card"></i>
+                        <span class="step-number">2</span>
+                    </div>
+                    <h3 class="step-title">Оплата страховой премии</h3>
+                    <p class="step-description">
+                        Клиент оплачивает страховую премию. После оплаты активируется смарт-контракт.
+                    </p>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <i class="fas fa-cloud-sun"></i>
+                        <span class="step-number">3</span>
+                    </div>
+                    <h3 class="step-title">Мониторинг событий</h3>
+                    <p class="step-description">
+                        Смарт-контракт подключается к внешнему оракулу (доверенному источнику данных) для проверки 
+                        реальных событий — задержек рейсов, погодных условий и других параметров.
+                    </p>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <i class="fas fa-bolt"></i>
+                        <span class="step-number">4</span>
+                    </div>
+                    <h3 class="step-title">Исполнение</h3>
+                    <p class="step-description">
+                        Если событие соответствует условиям контракта, выплата производится мгновенно, 
+                        без подтверждения со стороны человека. Деньги переводятся на счет клиента.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок про оракулы -->
+        <section class="oracle-section">
+            <div class="oracle-grid">
+                <div class="oracle-content">
+                    <h2 class="oracle-title">Роль оракулов в системе</h2>
+                    <p class="oracle-text">
+                        Смарт-контракты не имеют доступа к внешним данным напрямую. Оракулы — это мосты, 
+                        которые доставляют проверенную информацию из реального мира в блокчейн.
+                    </p>
+                    <ul class="oracle-features">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Данные о задержках и отменах рейсов</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Метеорологические данные (дождь, шторм, температура)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Информация о статусе багажа (симуляция)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Мульти-оракулы для повышения надежности</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="oracle-image">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Децентрализованные оракулы</h3>
+                    <p>Несколько независимых источников данных</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Преимущества -->
+        <section class="benefits-section">
+            <h2 class="section-subtitle">Почему это выгодно?</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="benefit-title">Безопасность</h3>
+                    <p class="benefit-text">
+                        Смарт-контракты исключают возможность мошенничества и нечестных отказов в выплате.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="benefit-title">Скорость</h3>
+                    <p class="benefit-text">
+                        Выплаты производятся мгновенно при наступлении страхового случая, без задержек.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="benefit-title">Эффективность</h3>
+                    <p class="benefit-text">
+                        Снижение операционных затрат за счет полной автоматизации процессов.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Демо-анимация работы -->
+        <section class="demo-section">
+            <h2 class="section-subtitle">Как это выглядит в действии</h2>
+            <div class="demo-container">
+                <div class="demo-animation">
+                    <div class="blockchain-demo">
+                        <div class="block block1">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="block block2">
+                            <i class="fas fa-cloud-rain"></i>
+                        </div>
+                        <div class="block block3">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="block block4">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="chain-line"></div>
+                    </div>
+                    <p style="text-align: center; margin-top: 30px; color: #666;">
+                        Событие → Проверка оракула → Смарт-контракт → Выплата
+                    </p>
+                </div>
+                <div class="demo-text">
+                    <h3 style="font-size: 24px; margin-bottom: 20px;">Пример сценария</h3>
+                    <ol style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="background: #764ba2; color: white; width: 25px; height: 25px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">1</span>
+                            <span>Клиент оформляет страховку на рейс SU 1234</span>
+                        </li>
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="background: #764ba2; color: white; width: 25px; height: 25px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">2</span>
+                            <span>Рейс задерживается на 3 часа (оракул передает данные)</span>
+                        </li>
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="background: #764ba2; color: white; width: 25px; height: 25px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">3</span>
+                            <span>Смарт-контракт проверяет условия и инициирует выплату</span>
+                        </li>
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="background: #764ba2; color: white; width: 25px; height: 25px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">4</span>
+                            <span>Клиент получает 250 TON на кошелек без написания заявления</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок с вопросами и ответами -->
+        <section class="description-block" style="background: linear-gradient(135deg, #f8f7ff, white);">
+            <h2 class="description-title">Часто задаваемые вопросы</h2>
+            <div style="display: grid; gap: 20px;">
+                <div style="padding: 20px; border-bottom: 1px solid #e0e0e0;">
+                    <h3 style="font-size: 18px; color: #333; margin-bottom: 10px;">
+                        <i class="fas fa-question-circle" style="color: #764ba2; margin-right: 10px;"></i>
+                        Как обеспечивается достоверность данных?
+                    </h3>
+                    <p style="color: #666; margin-left: 30px;">
+                       Данные поступают из достоверного API, а также проходят валидацию на сервере перед передачей в смарт-контракт.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px; border-bottom: 1px solid #e0e0e0;">
+                    <h3 style="font-size: 18px; color: #333; margin-bottom: 10px;">
+                        <i class="fas fa-question-circle" style="color: #764ba2; margin-right: 10px;"></i>
+                        Как быстро приходят выплаты?
+                    </h3>
+                    <p style="color: #666; margin-left: 30px;">
+                        В среднем 15 минут с момента подтверждения события, в зависимости от загруженности сети.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px;">
+                    <h3 style="font-size: 18px; color: #333; margin-bottom: 10px;">
+                        <i class="fas fa-question-circle" style="color: #764ba2; margin-right: 10px;"></i>
+                        Нужно ли платить за газ?
+                    </h3>
+                    <p style="color: #666; margin-left: 30px;">
+                        Стоимость газа включена в страховую премию. Сервер автоматически оплачивает газ из своего горячего кошелька.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="footer"></div>
+    
+    <!-- Контейнеры для модальных окон -->
+    <div id="notification"></div>
+    <div id="loginModal" class="modal" style="display: none;"></div>
+    <div id="registerModal" class="modal" style="display: none;"></div>
+    <div id="profileModal" class="modal modal-large" style="display: none;"></div>
+
+    <!-- Подключение скриптов (только один раз) -->
+    <script src="../js/common-auth.js"></script>
+
+    <!-- Подключение скриптов -->
+    <script src="../js/global.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>
+</body>
+</html>
