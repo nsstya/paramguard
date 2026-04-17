@@ -11,6 +11,19 @@
     <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
+    <!-- КОНФИГУРАЦИЯ - САМАЯ ПЕРВАЯ -->
+    <script>
+        // Настройка API URL в зависимости от окружения
+        if (window.location.hostname === 'paramguard.vercel.app') {
+            // На Vercel используем localhost? Нет, нужно использовать ngrok или другой URL
+            // ПОКА ОСТАВЛЯЕМ ПУСТЫМ - будем использовать демо-режим
+            window.API_URL = null;
+        } else {
+            window.API_URL = 'http://localhost:3000';
+        }
+        console.log('🌍 Конфигурация: API_URL =', window.API_URL);
+    </script>
+
     <div id="header"></div>
     
     <main class="main-content">
@@ -89,7 +102,7 @@
     <script src="js/profile.js"></script>
     
     <script>
-        // НЕ ОБЪЯВЛЯЕМ API_URL заново - используем тот, что из common-auth.js
+        // Дополнительные функции для главной страницы
         
         function updateUserIcon() {
             const savedUser = localStorage.getItem('user');
@@ -141,7 +154,9 @@
             if (registerModal) registerModal.style.display = 'none';
             if (profileModal) {
                 profileModal.style.display = 'flex';
-                loadProfileData();
+                if (typeof loadProfileData === 'function') {
+                    loadProfileData();
+                }
             }
         }
         
@@ -178,15 +193,35 @@
             setTimeout(() => notification.style.display = 'none', 3000);
         }
         
+        // ВХОД С ПОДДЕРЖКОЙ ДЕМО-РЕЖИМА
         async function handleLogin() {
             const email = document.getElementById('loginEmail')?.value;
             const password = document.getElementById('loginPassword')?.value;
+            
             if (!email || !password) {
                 showNotification('Заполните все поля', 'error');
                 return;
             }
+            
+            // Если на Vercel и нет API_URL - используем ДЕМО-РЕЖИМ
+            if (window.location.hostname === 'paramguard.vercel.app' && !window.API_URL) {
+                console.log('📱 Демо-режим: вход без сервера');
+                const demoUser = {
+                    id: Date.now(),
+                    email: email,
+                    full_name: email.split('@')[0] || 'Пользователь',
+                    phone: '+7 999 123-45-67'
+                };
+                localStorage.setItem('user', JSON.stringify(demoUser));
+                closeModal('loginModal');
+                showNotification(`Добро пожаловать, ${demoUser.full_name}! (Демо-режим)`);
+                updateUserIcon();
+                setTimeout(() => window.location.reload(), 1000);
+                return;
+            }
+            
+            // Реальный вход через API
             try {
-                // Используем API_URL из common-auth.js
                 const apiUrl = window.API_URL || 'http://localhost:3000';
                 const response = await fetch(`${apiUrl}/api/users/login`, {
                     method: 'POST',
@@ -209,6 +244,7 @@
             }
         }
         
+        // РЕГИСТРАЦИЯ С ПОДДЕРЖКОЙ ДЕМО-РЕЖИМА
         async function handleRegister() {
             const fullName = document.getElementById('regFullName')?.value;
             const email = document.getElementById('regEmail')?.value;
@@ -234,6 +270,24 @@
                 return;
             }
             
+            // Если на Vercel и нет API_URL - используем ДЕМО-РЕЖИМ
+            if (window.location.hostname === 'paramguard.vercel.app' && !window.API_URL) {
+                console.log('📱 Демо-режим: регистрация без сервера');
+                const demoUser = {
+                    id: Date.now(),
+                    email: email,
+                    full_name: fullName,
+                    phone: phone || '+7 999 123-45-67'
+                };
+                localStorage.setItem('user', JSON.stringify(demoUser));
+                closeModal('registerModal');
+                showNotification(`Регистрация успешна! Добро пожаловать, ${fullName}! (Демо-режим)`);
+                updateUserIcon();
+                setTimeout(() => window.location.reload(), 1000);
+                return;
+            }
+            
+            // Реальная регистрация
             try {
                 const apiUrl = window.API_URL || 'http://localhost:3000';
                 const response = await fetch(`${apiUrl}/api/users/register`, {
@@ -271,9 +325,6 @@
             setTimeout(() => window.location.reload(), 1000);
         }
         
-        // =====================================================
-        // ПРОФИЛЬ
-        // =====================================================
         async function loadProfileData() {
             const savedUser = localStorage.getItem('user');
             if (!savedUser) {
@@ -317,12 +368,10 @@
                         </button>
                     </div>
                 `;
-            }, 500);
+            }, 100);
         }
         
-        // =====================================================
         // ИНИЦИАЛИЗАЦИЯ
-        // =====================================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Главная страница загружена');
             
