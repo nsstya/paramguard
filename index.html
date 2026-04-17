@@ -1,420 +1,110 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParamGuard - Главная</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/modal.css">
-</head>
-<body>
-    <!-- КОНФИГУРАЦИЯ - САМАЯ ПЕРВАЯ -->
-    <script>
-        // Настройка API URL в зависимости от окружения
-        if (window.location.hostname === 'paramguard.vercel.app') {
-            // На Vercel используем localhost? Нет, нужно использовать ngrok или другой URL
-            // ПОКА ОСТАВЛЯЕМ ПУСТЫМ - будем использовать демо-режим
-            window.API_URL = null;
-        } else {
-            window.API_URL = 'http://localhost:3000';
-        }
-        console.log('🌍 Конфигурация: API_URL =', window.API_URL);
-    </script>
+// js/common-auth.js
+console.log('🚀 common-auth.js инициализирован');
 
-    <div id="header"></div>
+// Глобальные функции (без дублирования API_URL)
+function openLoginModal() {
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const profileModal = document.getElementById('profileModal');
     
-    <main class="main-content">
-        <section class="hero-section">
-            <h1 class="hero-title">
-                Страхование на <span>блокчейне</span><br>мгновенные выплаты
-            </h1>
-            <p class="hero-description">
-                ParamGuard использует смарт-контракты для автоматических выплат при наступлении страховых случаев.
-            </p>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-number">N+</div>
-                    <div class="stat-label">Довольных клиентов</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">15 min</div>
-                    <div class="stat-label">Среднее время выплаты</div>
-                </div>
-            </div>
-        </section>
+    if (loginModal) loginModal.style.display = 'flex';
+    if (registerModal) registerModal.style.display = 'none';
+    if (profileModal) profileModal.style.display = 'none';
+}
 
-        <section class="insurance-section">
-            <h2 class="section-title">Выберите тип страхования</h2>
-            <div class="insurance-grid">
-                <div class="insurance-card" onclick="window.location.href='pages/insurance-travel.html'">
-                    <div class="insurance-icon"><i class="fas fa-plane"></i></div>
-                    <h3>Путешествия</h3>
-                    <span class="badge">Активно</span>
-                </div>
-                
-                <div class="insurance-card disabled">
-                    <div class="insurance-icon"><i class="fas fa-car"></i></div>
-                    <h3>Авто</h3>
-                    <p>Скоро</p>
-                    <span class="badge">В разработке</span>
-                </div>
-                
-                <div class="insurance-card disabled">
-                    <div class="insurance-icon"><i class="fas fa-home"></i></div>
-                    <h3>Недвижимость</h3>
-                    <p>Скоро</p>
-                    <span class="badge">В разработке</span>
-                </div>
-                
-                <div class="insurance-card disabled">
-                    <div class="insurance-icon"><i class="fas fa-tractor"></i></div>
-                    <h3>Агро</h3>
-                    <p>Скоро</p>
-                    <span class="badge">В разработке</span>
-                </div>
-            </div>
-        </section>
-    </main>
+function openRegisterModal() {
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const profileModal = document.getElementById('profileModal');
     
-    <div id="footer"></div>
-    
-    <div id="notification"></div>
-    <div id="loginModal" class="modal" style="display: none;"></div>
-    <div id="registerModal" class="modal" style="display: none;"></div>
+    if (loginModal) loginModal.style.display = 'none';
+    if (registerModal) registerModal.style.display = 'flex';
+    if (profileModal) profileModal.style.display = 'none';
+}
 
-    <div id="profileModal" class="modal modal-large" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Личный кабинет</h2>
-                <span class="close" onclick="closeProfileModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="profileContent"></div>
-            </div>
-        </div>
-    </div>
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'none';
+}
 
-    <script src="js/global.js"></script>
-    <script src="js/common-auth.js"></script>
-    <script src="js/profile.js"></script>
-    
-    <script>
-        // Дополнительные функции для главной страницы
-        
-        function updateUserIcon() {
-            const savedUser = localStorage.getItem('user');
-            const userIcon = document.querySelector('.user-icon');
-            
-            if (savedUser && userIcon) {
-                const user = JSON.parse(savedUser);
-                const initial = user.full_name ? user.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase();
-                userIcon.innerHTML = `<span>${initial}</span>`;
-                userIcon.style.cursor = 'pointer';
-            } else if (userIcon) {
-                userIcon.innerHTML = '<i class="fas fa-user"></i>';
-                userIcon.style.cursor = 'pointer';
-            }
-        }
-        
-        function openLoginModal() {
-            const loginModal = document.getElementById('loginModal');
-            const registerModal = document.getElementById('registerModal');
-            const profileModal = document.getElementById('profileModal');
-            
-            if (loginModal) loginModal.style.display = 'flex';
-            if (registerModal) registerModal.style.display = 'none';
-            if (profileModal) profileModal.style.display = 'none';
-        }
-        
-        function openRegisterModal() {
-            const loginModal = document.getElementById('loginModal');
-            const registerModal = document.getElementById('registerModal');
-            const profileModal = document.getElementById('profileModal');
-            
-            if (loginModal) loginModal.style.display = 'none';
-            if (registerModal) registerModal.style.display = 'flex';
-            if (profileModal) profileModal.style.display = 'none';
-        }
-        
-        function openProfileModal() {
-            const savedUser = localStorage.getItem('user');
-            if (!savedUser) {
-                openLoginModal();
-                return;
-            }
-            
-            const loginModal = document.getElementById('loginModal');
-            const registerModal = document.getElementById('registerModal');
-            const profileModal = document.getElementById('profileModal');
-            
-            if (loginModal) loginModal.style.display = 'none';
-            if (registerModal) registerModal.style.display = 'none';
-            if (profileModal) {
-                profileModal.style.display = 'flex';
-                if (typeof loadProfileData === 'function') {
-                    loadProfileData();
+function showNotification(message, type = 'success') {
+    let notification = document.getElementById('notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'notification';
+        document.body.appendChild(notification);
+    }
+    notification.innerHTML = `<span>${message}</span>`;
+    notification.style.display = 'flex';
+    notification.className = `notification ${type}`;
+    setTimeout(() => notification.style.display = 'none', 3000);
+}
+
+// Загрузка компонентов
+function loadComponents() {
+    fetch('/components/header.html')
+        .then(r => r.text())
+        .then(html => {
+            const header = document.getElementById('header');
+            if (header) {
+                header.innerHTML = html;
+                console.log('✅ Шапка загружена');
+                if (typeof updateUserIcon === 'function') {
+                    setTimeout(() => updateUserIcon(), 100);
                 }
             }
-        }
-        
-        function closeProfileModal() {
-            const profileModal = document.getElementById('profileModal');
-            if (profileModal) profileModal.style.display = 'none';
-        }
-        
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) modal.style.display = 'none';
-        }
-        
-        function switchToRegister() {
-            closeModal('loginModal');
-            openRegisterModal();
-        }
-        
-        function switchToLogin() {
-            closeModal('registerModal');
-            openLoginModal();
-        }
-        
-        function showNotification(message, type = 'success') {
-            let notification = document.getElementById('notification');
-            if (!notification) {
-                notification = document.createElement('div');
-                notification.id = 'notification';
-                document.body.appendChild(notification);
+        })
+        .catch(e => console.error('❌ Ошибка загрузки шапки:', e));
+    
+    fetch('/components/footer.html')
+        .then(r => r.text())
+        .then(html => {
+            const footer = document.getElementById('footer');
+            if (footer) {
+                footer.innerHTML = html;
+                console.log('✅ Подвал загружен');
             }
-            notification.innerHTML = `<span>${message}</span>`;
-            notification.style.display = 'flex';
-            notification.className = `notification ${type}`;
-            setTimeout(() => notification.style.display = 'none', 3000);
-        }
-        
-        // ВХОД С ПОДДЕРЖКОЙ ДЕМО-РЕЖИМА
-        async function handleLogin() {
-            const email = document.getElementById('loginEmail')?.value;
-            const password = document.getElementById('loginPassword')?.value;
-            
-            if (!email || !password) {
-                showNotification('Заполните все поля', 'error');
-                return;
-            }
-            
-            // Если на Vercel и нет API_URL - используем ДЕМО-РЕЖИМ
-            if (window.location.hostname === 'paramguard.vercel.app' && !window.API_URL) {
-                console.log('📱 Демо-режим: вход без сервера');
-                const demoUser = {
-                    id: Date.now(),
-                    email: email,
-                    full_name: email.split('@')[0] || 'Пользователь',
-                    phone: '+7 999 123-45-67'
-                };
-                localStorage.setItem('user', JSON.stringify(demoUser));
-                closeModal('loginModal');
-                showNotification(`Добро пожаловать, ${demoUser.full_name}! (Демо-режим)`);
-                updateUserIcon();
-                setTimeout(() => window.location.reload(), 1000);
-                return;
-            }
-            
-            // Реальный вход через API
-            try {
-                const apiUrl = window.API_URL || 'http://localhost:3000';
-                const response = await fetch(`${apiUrl}/api/users/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    closeModal('loginModal');
-                    showNotification(`Добро пожаловать, ${data.user.full_name}!`);
-                    updateUserIcon();
-                    setTimeout(() => window.location.reload(), 1000);
-                } else {
-                    showNotification(data.error || 'Неверный email или пароль', 'error');
-                }
-            } catch (error) {
-                console.error('Ошибка входа:', error);
-                showNotification('Ошибка соединения с сервером', 'error');
-            }
-        }
-        
-        // РЕГИСТРАЦИЯ С ПОДДЕРЖКОЙ ДЕМО-РЕЖИМА
-        async function handleRegister() {
-            const fullName = document.getElementById('regFullName')?.value;
-            const email = document.getElementById('regEmail')?.value;
-            const phone = document.getElementById('regPhone')?.value;
-            const password = document.getElementById('regPassword')?.value;
-            const passwordConfirm = document.getElementById('regPasswordConfirm')?.value;
-            const consent = document.getElementById('regConsent')?.checked;
-            
-            if (!fullName || !email || !password) {
-                showNotification('Заполните обязательные поля', 'error');
-                return;
-            }
-            if (password !== passwordConfirm) {
-                showNotification('Пароли не совпадают', 'error');
-                return;
-            }
-            if (password.length < 6) {
-                showNotification('Пароль должен быть не менее 6 символов', 'error');
-                return;
-            }
-            if (!consent) {
-                showNotification('Необходимо согласие на обработку данных', 'error');
-                return;
-            }
-            
-            // Если на Vercel и нет API_URL - используем ДЕМО-РЕЖИМ
-            if (window.location.hostname === 'paramguard.vercel.app' && !window.API_URL) {
-                console.log('📱 Демо-режим: регистрация без сервера');
-                const demoUser = {
-                    id: Date.now(),
-                    email: email,
-                    full_name: fullName,
-                    phone: phone || '+7 999 123-45-67'
-                };
-                localStorage.setItem('user', JSON.stringify(demoUser));
-                closeModal('registerModal');
-                showNotification(`Регистрация успешна! Добро пожаловать, ${fullName}! (Демо-режим)`);
-                updateUserIcon();
-                setTimeout(() => window.location.reload(), 1000);
-                return;
-            }
-            
-            // Реальная регистрация
-            try {
-                const apiUrl = window.API_URL || 'http://localhost:3000';
-                const response = await fetch(`${apiUrl}/api/users/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        email, 
-                        password, 
-                        full_name: fullName, 
-                        phone, 
-                        pd_consent: true 
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    closeModal('registerModal');
-                    showNotification('Регистрация успешна!');
-                    updateUserIcon();
-                    setTimeout(() => window.location.reload(), 1000);
-                } else {
-                    showNotification(data.error || 'Ошибка регистрации', 'error');
-                }
-            } catch (error) {
-                console.error('Ошибка регистрации:', error);
-                showNotification('Ошибка соединения с сервером', 'error');
-            }
-        }
-        
-        function logout() {
-            localStorage.removeItem('user');
-            updateUserIcon();
-            closeProfileModal();
-            showNotification('Вы вышли из системы', 'info');
-            setTimeout(() => window.location.reload(), 1000);
-        }
-        
-        async function loadProfileData() {
-            const savedUser = localStorage.getItem('user');
-            if (!savedUser) {
-                showNotification('Необходимо войти в систему', 'warning');
-                openLoginModal();
-                return;
-            }
-            
-            const user = JSON.parse(savedUser);
-            const content = document.getElementById('profileContent');
-            if (!content) return;
-            
-            content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка данных...</div>';
-            
-            setTimeout(() => {
-                content.innerHTML = `
-                    <div class="profile-info">
-                        <div class="profile-header">
-                            <div class="profile-avatar">${user.full_name ? user.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}</div>
-                            <div class="profile-details">
-                                <h3>${user.full_name || 'Пользователь'}</h3>
-                                <p><i class="fas fa-envelope"></i> ${user.email}</p>
-                                ${user.phone ? `<p><i class="fas fa-phone"></i> ${user.phone}</p>` : ''}
-                            </div>
-                        </div>
-                        <div class="profile-stats">
-                            <div class="stat-card"><div class="number">0</div><div class="label">Всего полисов</div></div>
-                            <div class="stat-card"><div class="number">0</div><div class="label">Оплаченных</div></div>
-                            <div class="stat-card"><div class="number">0</div><div class="label">Черновиков</div></div>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-section">
-                        <h3>📋 Мои страховые полисы</h3>
-                        <p class="no-data">У вас пока нет полисов</p>
-                    </div>
-                    
-                    <div style="margin-top: 30px; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                        <button onclick="logout()" style="padding: 12px 30px; background: #f5222d; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer;">
-                            <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
-                        </button>
-                    </div>
-                `;
-            }, 100);
-        }
-        
-        // ИНИЦИАЛИЗАЦИЯ
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ Главная страница загружена');
-            
+        })
+        .catch(e => console.error('❌ Ошибка загрузки подвала:', e));
+    
+    fetch('/components/login-modal.html')
+        .then(r => r.text())
+        .then(html => {
             const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.innerHTML = html;
+                console.log('✅ Окно входа загружено');
+            }
+        })
+        .catch(e => console.error('❌ Ошибка загрузки окна входа:', e));
+    
+    fetch('/components/register-modal.html')
+        .then(r => r.text())
+        .then(html => {
             const registerModal = document.getElementById('registerModal');
-            const profileModal = document.getElementById('profileModal');
-            
-            if (loginModal) loginModal.style.display = 'none';
-            if (registerModal) registerModal.style.display = 'none';
-            if (profileModal) profileModal.style.display = 'none';
-            
-            updateUserIcon();
-            
-            setTimeout(() => {
-                const userIcon = document.querySelector('.user-icon');
-                if (userIcon) {
-                    userIcon.onclick = function(e) {
-                        e.stopPropagation();
-                        console.log('🖱️ Клик по иконке');
-                        if (localStorage.getItem('user')) {
-                            openProfileModal();
-                        } else {
-                            openLoginModal();
-                        }
-                    };
-                }
-            }, 300);
-        });
-        
-        // Глобальные функции
-        window.openLoginModal = openLoginModal;
-        window.openRegisterModal = openRegisterModal;
-        window.openProfileModal = openProfileModal;
-        window.closeProfileModal = closeProfileModal;
-        window.closeModal = closeModal;
-        window.switchToRegister = switchToRegister;
-        window.switchToLogin = switchToLogin;
-        window.handleLogin = handleLogin;
-        window.handleRegister = handleRegister;
-        window.logout = logout;
-        window.showNotification = showNotification;
-        window.loadProfileData = loadProfileData;
-        window.updateUserIcon = updateUserIcon;
-    </script>
-</body>
-</html>
+            if (registerModal) {
+                registerModal.innerHTML = html;
+                console.log('✅ Окно регистрации загружено');
+            }
+        })
+        .catch(e => console.error('❌ Ошибка загрузки окна регистрации:', e));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 common-auth.js инициализирован');
+    
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const profileModal = document.getElementById('profileModal');
+    
+    if (loginModal) loginModal.style.display = 'none';
+    if (registerModal) registerModal.style.display = 'none';
+    if (profileModal) profileModal.style.display = 'none';
+    
+    loadComponents();
+});
+
+window.openLoginModal = openLoginModal;
+window.openRegisterModal = openRegisterModal;
+window.closeModal = closeModal;
+window.showNotification = showNotification;
