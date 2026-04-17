@@ -1,11 +1,14 @@
 // js/profile.js - Общий код для отображения профиля на всех страницах
 
+// Получаем базовый URL API
+const getApiUrl = () => window.API_URL || 'http://localhost:3000';
+
 // Функция загрузки данных профиля
 async function loadProfileData() {
     const savedUser = localStorage.getItem('user');
     if (!savedUser) {
-        showNotification('Необходимо войти в систему', 'warning');
-        openLoginModal();
+        if (typeof showNotification === 'function') showNotification('Необходимо войти в систему', 'warning');
+        if (typeof openLoginModal === 'function') openLoginModal();
         return;
     }
     
@@ -22,7 +25,8 @@ async function loadProfileData() {
         // Загружаем черновики
         let drafts = [];
         try {
-            const draftsResponse = await fetch(`http://localhost:3000/api/policies/drafts/user/${user.id}`);
+            const apiUrl = getApiUrl();
+            const draftsResponse = await fetch(`${apiUrl}/api/policies/drafts/user/${user.id}`);
             const draftsData = await draftsResponse.json();
             drafts = draftsData.success ? draftsData.drafts : [];
         } catch (e) {
@@ -90,7 +94,9 @@ async function loadProfileData() {
         
         // Загружаем уведомления после вставки HTML
         setTimeout(() => {
-            loadNotifications();
+            if (typeof loadNotifications === 'function') {
+                loadNotifications();
+            }
         }, 100);
         
     } catch (error) {
@@ -99,50 +105,12 @@ async function loadProfileData() {
     }
 }
 
-// Простой рендер полисов (на случай если renderPoliciesList не определена)
-// function renderPoliciesSimple(policies) {
-//     if (!policies || policies.length === 0) {
-//         return '<p class="no-data"><i class="fas fa-file-alt"></i> У вас пока нет страховых полисов.<br><a href="/pages/insurance-travel.html" style="color: #764ba2;">Оформить первый полис</a></p>';
-//     }
-    
-//     return policies.map(policy => `
-//         <div class="policy-item" style="margin-bottom: 15px; border-radius: 12px; background: white; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 15px;">
-//             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-//                 <span style="font-weight: 700; color: #764ba2;">${policy.policy_number || 'POL-' + policy.id}</span>
-//                 <span style="padding: 2px 8px; border-radius: 20px; font-size: 12px; background: ${policy.payment_status === 'paid' ? '#52c41a' : '#faad14'}; color: white;">
-//                     ${policy.payment_status === 'paid' ? 'Оплачен' : 'Черновик'}
-//                 </span>
-//             </div>
-//             <div><strong>Рейс:</strong> ${policy.flight_number}</div>
-//             <div><strong>Дата вылета:</strong> ${policy.departure_date ? new Date(policy.departure_date).toLocaleDateString() : '—'}</div>
-//             <div><strong>Сумма:</strong> ${policy.total_price_rub?.toLocaleString()} ₽</div>
-//             <div style="margin-top: 10px;">
-//                 ${policy.payment_status !== 'paid' ? `
-//                     <button onclick="payPolicy(${policy.id})" style="padding: 5px 15px; background: #52c41a; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-//                         Оплатить
-//                     </button>
-//                     <button onclick="editPolicy(${policy.id})" style="padding: 5px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
-//                         Редактировать
-//                     </button>
-//                 ` : `
-//                     <button onclick="downloadPolicy(${policy.id})" style="padding: 5px 15px; background: #764ba2; color: white; border: none; border-radius: 5px; cursor: pointer;">
-//                         Скачать полис
-//                     </button>
-//                 `}
-//             </div>
-//         </div>
-//     `).join('');
-// }
-
-
-
 function renderPoliciesSimple(policies) {
     if (!policies || policies.length === 0) {
         return '<p class="no-data"><i class="fas fa-file-alt"></i> У вас пока нет страховых полисов.<br><a href="/pages/insurance-travel.html" style="color: #764ba2;">Оформить первый полис</a></p>';
     }
     
     return policies.map(policy => {
-        // Форматируем дату вылета
         let departureDateStr = '—';
         if (policy.departure_date) {
             if (typeof policy.departure_date === 'string' && policy.departure_date.includes('T')) {
@@ -186,7 +154,6 @@ function renderPoliciesSimple(policies) {
     `}).join('');
 }
 
-// Вспомогательная функция для отображения названий рисков
 function getRiskNames(selectedRisksJson) {
     if (!selectedRisksJson) return '—';
     
@@ -210,8 +177,6 @@ function getRiskNames(selectedRisksJson) {
     return risks.map(r => riskNames[r] || r).join(', ') || '—';
 }
 
-
-// Рендер списка черновиков
 function renderDraftsList(drafts) {
     if (!drafts || drafts.length === 0) {
         return '<p class="no-data"><i class="fas fa-file-alt"></i> У вас нет сохраненных черновиков.<br><a href="/pages/insurance-travel.html" style="color: #764ba2;">Создать новый полис</a></p>';
@@ -255,7 +220,6 @@ function renderDraftsList(drafts) {
     }).join('');
 }
 
-// Переключение деталей черновика
 function toggleDraftDetails(draftId) {
     const details = document.getElementById(`draft-details-${draftId}`);
     const chevron = document.getElementById(`draft-chevron-${draftId}`);
@@ -270,10 +234,10 @@ function toggleDraftDetails(draftId) {
     }
 }
 
-// Продолжить заполнение черновика
 async function continueDraft(draftId) {
     try {
-        const response = await fetch(`http://localhost:3000/api/policies/draft/${draftId}`);
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/policies/draft/${draftId}`);
         const data = await response.json();
         if (data.success && data.draft) {
             localStorage.setItem('load_draft_data', JSON.stringify(data.draft.draft_data));
@@ -281,28 +245,28 @@ async function continueDraft(draftId) {
         }
     } catch (error) {
         console.error('Ошибка загрузки черновика:', error);
-        showNotification('Ошибка загрузки черновика', 'error');
+        if (typeof showNotification === 'function') showNotification('Ошибка загрузки черновика', 'error');
     }
 }
 
-// Удалить черновик по ID
 async function deleteDraftById(draftId) {
     if (!confirm('Удалить этот черновик?')) return;
     
     try {
-        const response = await fetch(`http://localhost:3000/api/policies/draft/${draftId}`, {
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/policies/draft/${draftId}`, {
             method: 'DELETE'
         });
         const data = await response.json();
         if (data.success) {
-            showNotification('Черновик удален', 'success');
-            loadProfileData(); // Обновляем отображение
+            if (typeof showNotification === 'function') showNotification('Черновик удален', 'success');
+            loadProfileData();
         } else {
-            showNotification('Ошибка удаления', 'error');
+            if (typeof showNotification === 'function') showNotification('Ошибка удаления', 'error');
         }
     } catch (error) {
         console.error('Ошибка удаления черновика:', error);
-        showNotification('Ошибка удаления черновика', 'error');
+        if (typeof showNotification === 'function') showNotification('Ошибка удаления черновика', 'error');
     }
 }
 
@@ -310,7 +274,6 @@ async function deleteDraftById(draftId) {
 // УВЕДОМЛЕНИЯ
 // =====================================================
 
-// Функция загрузки уведомлений
 async function loadNotifications() {
     const savedUser = localStorage.getItem('user');
     if (!savedUser) return;
@@ -319,7 +282,6 @@ async function loadNotifications() {
     const notificationsList = document.getElementById('notificationsList');
     if (!notificationsList) return;
     
-    // Применяем стили к контейнеру
     notificationsList.style.wordBreak = 'break-word';
     notificationsList.style.whiteSpace = 'normal';
     notificationsList.style.maxWidth = '100%';
@@ -327,7 +289,8 @@ async function loadNotifications() {
     notificationsList.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка уведомлений...</div>';
     
     try {
-        const response = await fetch(`http://localhost:3000/api/notifications/user/${user.id}?limit=20`);
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/notifications/user/${user.id}?limit=20`);
         const data = await response.json();
         
         if (data.success && data.notifications.length > 0) {
@@ -365,7 +328,6 @@ async function loadNotifications() {
                 </div>
             `).join('');
             
-            // Добавляем кнопку "Отметить все как прочитанные"
             if (data.notifications.some(n => !n.is_read)) {
                 const markAllBtn = document.createElement('div');
                 markAllBtn.style.textAlign = 'right';
@@ -397,22 +359,20 @@ async function loadNotifications() {
     }
 }
 
-// Отметить уведомление как прочитанное
 async function markNotificationRead(notificationId) {
     try {
-        const response = await fetch(`http://localhost:3000/api/notifications/${notificationId}/read`, {
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/notifications/${notificationId}/read`, {
             method: 'PATCH'
         });
         const data = await response.json();
         if (data.success) {
-            // Обновляем внешний вид
             const notifElement = document.getElementById(`notif-${notificationId}`);
             if (notifElement) {
                 notifElement.style.background = '#fff';
                 notifElement.classList.remove('unread');
                 notifElement.classList.add('read');
             }
-            // Обновляем счетчик
             updateNotificationCount();
         }
     } catch (error) {
@@ -420,7 +380,6 @@ async function markNotificationRead(notificationId) {
     }
 }
 
-// Отметить все уведомления как прочитанные
 async function markAllNotificationsRead() {
     const savedUser = localStorage.getItem('user');
     if (!savedUser) return;
@@ -428,7 +387,8 @@ async function markAllNotificationsRead() {
     const user = JSON.parse(savedUser);
     
     try {
-        const response = await fetch(`http://localhost:3000/api/notifications/user/${user.id}/read-all`, {
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/notifications/user/${user.id}/read-all`, {
             method: 'PATCH'
         });
         const data = await response.json();
@@ -441,7 +401,6 @@ async function markAllNotificationsRead() {
     }
 }
 
-// Получить количество непрочитанных уведомлений
 async function updateNotificationCount() {
     const savedUser = localStorage.getItem('user');
     if (!savedUser) return;
@@ -449,11 +408,11 @@ async function updateNotificationCount() {
     const user = JSON.parse(savedUser);
     
     try {
-        const response = await fetch(`http://localhost:3000/api/notifications/user/${user.id}?unread_only=true&limit=100`);
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/notifications/user/${user.id}?unread_only=true&limit=100`);
         const data = await response.json();
         const unreadCount = data.success ? data.notifications.length : 0;
         
-        // Добавляем бейдж к иконке уведомлений (если есть)
         const bellIcon = document.querySelector('.notification-bell');
         if (bellIcon) {
             if (unreadCount > 0) {
@@ -463,17 +422,16 @@ async function updateNotificationCount() {
             }
         }
         
-        // Сохраняем в localStorage для отображения в меню
         localStorage.setItem('unread_notifications', unreadCount);
     } catch (error) {
         console.error('Ошибка:', error);
     }
 }
 
-// Создать уведомление о выплате
 async function createPayoutNotification(userId, policyId, amountRub, amountTon, riskCode, policyNumber) {
     try {
-        const response = await fetch('http://localhost:3000/api/notifications', {
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/notifications`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -501,7 +459,6 @@ async function createPayoutNotification(userId, policyId, amountRub, amountTon, 
     }
 }
 
-// Делаем функции глобальными
 window.loadProfileData = loadProfileData;
 window.toggleDraftDetails = toggleDraftDetails;
 window.continueDraft = continueDraft;
