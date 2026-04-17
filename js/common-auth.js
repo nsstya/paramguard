@@ -1,6 +1,6 @@
 // js/common-auth.js - Общая авторизация для всех страниц
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = (window.API_URL || 'http://localhost:3000') + '/api';
 
 // ----- ОТКРЫТИЕ/ЗАКРЫТИЕ ОКОН -----
 function openLoginModal() {
