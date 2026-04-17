@@ -89,7 +89,7 @@
     <script src="js/profile.js"></script>
     
     <script>
-        const API_URL = 'http://localhost:3000/api';
+        // НЕ ОБЪЯВЛЯЕМ API_URL заново - используем тот, что из common-auth.js
         
         function updateUserIcon() {
             const savedUser = localStorage.getItem('user');
@@ -186,7 +186,9 @@
                 return;
             }
             try {
-                const response = await fetch(`${API_URL}/users/login`, {
+                // Используем API_URL из common-auth.js
+                const apiUrl = window.API_URL || 'http://localhost:3000';
+                const response = await fetch(`${apiUrl}/api/users/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -233,7 +235,8 @@
             }
             
             try {
-                const response = await fetch(`${API_URL}/users/register`, {
+                const apiUrl = window.API_URL || 'http://localhost:3000';
+                const response = await fetch(`${apiUrl}/api/users/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -285,7 +288,6 @@
             
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка данных...</div>';
             
-            // Демо-данные для профиля
             setTimeout(() => {
                 content.innerHTML = `
                     <div class="profile-info">
